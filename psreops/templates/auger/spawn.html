@@ -1,0 +1,247 @@
+{% extends "page.html" %}
+
+{% block title %}
+  PsreOps - Select Your Environment
+{% endblock %}
+
+{% block stylesheet %}
+  {{ super() }}
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #333;
+      padding: 20px;
+    }
+    .spawn-container {
+      max-width: 800px;
+      width: 100%;
+    }
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 36px;
+      margin: 0 0 10px 0;
+      font-weight: 700;
+    }
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    .tier-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .tier-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .tier-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    .tier-card.featured {
+      border: 3px solid #2a5298;
+      transform: scale(1.02);
+    }
+    .tier-card.featured:hover {
+      transform: scale(1.02) translateY(-8px);
+    }
+    .tier-header {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .tier-header h2 {
+      margin: 0 0 5px 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .tier-header .badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tier-body {
+      padding: 30px 20px;
+    }
+    .tier-price {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1e3c72;
+      margin-bottom: 15px;
+    }
+    .tier-price small {
+      font-size: 14px;
+      color: #666;
+      font-weight: 400;
+    }
+    .tier-description {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .tier-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 25px 0;
+    }
+    .tier-features li {
+      padding: 8px 0;
+      color: #555;
+      font-size: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .tier-features li:before {
+      content: "✓ ";
+      color: #2a5298;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .tier-features li:last-child {
+      border-bottom: none;
+    }
+    .tier-button {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tier-button.primary {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+    }
+    .tier-button.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
+    }
+    .tier-button.secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .tier-button.secondary:hover {
+      background: #e8e8e8;
+    }
+    .tier-card.featured .tier-button.secondary {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border: none;
+    }
+  </style>
+{% endblock %}
+
+{% block main %}
+<div class="spawn-container">
+  <div class="header">
+    <h1>🚀 Launch PsreOps</h1>
+    <p>Select your environment tier to get started</p>
+  </div>
+
+  <div class="tier-cards">
+    <!-- Free Tier -->
+    <div class="tier-card">
+      <div class="tier-header">
+        <h2>Free</h2>
+        <div class="badge">Community</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">$0<small>/month</small></div>
+        <p class="tier-description">Perfect for learning and small projects</p>
+        <ul class="tier-features">
+          <li>Full SRE dashboard access</li>
+          <li>Pod management</li>
+          <li>GitHub integration</li>
+          <li>Community support</li>
+          <li>1 concurrent pod</li>
+        </ul>
+        <form method="post" action="{{ url_prefix }}spawn-tier" style="display: inline;">
+          <input type="hidden" name="tier" value="free" />
+          <button type="submit" class="tier-button secondary">
+            Choose Free
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Professional Tier (Featured) -->
+    <div class="tier-card featured">
+      <div class="tier-header">
+        <h2>Professional</h2>
+        <div class="badge">Recommended</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">$49<small>/month</small></div>
+        <p class="tier-description">For serious SRE operations and teams</p>
+        <ul class="tier-features">
+          <li>Everything in Free, plus:</li>
+          <li>Advanced pod orchestration</li>
+          <li>Priority support</li>
+          <li>5 concurrent pods</li>
+          <li>Advanced monitoring</li>
+          <li>Custom domains</li>
+        </ul>
+        <form method="post" action="{{ url_prefix }}spawn-tier" style="display: inline;">
+          <input type="hidden" name="tier" value="professional" />
+          <button type="submit" class="tier-button primary">
+            Choose Professional
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Enterprise Tier -->
+    <div class="tier-card">
+      <div class="tier-header">
+        <h2>Enterprise</h2>
+        <div class="badge">Premium</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">Custom<small>/month</small></div>
+        <p class="tier-description">Unlimited power for large organizations</p>
+        <ul class="tier-features">
+          <li>Unlimited pods and resources</li>
+          <li>Dedicated support</li>
+          <li>SLA guarantee</li>
+          <li>Custom integrations</li>
+          <li>White-label options</li>
+        </ul>
+        <form method="post" action="{{ url_prefix }}spawn-tier" style="display: inline;">
+          <input type="hidden" name="tier" value="enterprise" />
+          <button type="submit" class="tier-button secondary">
+            Contact Sales
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; color: white; font-size: 14px;">
+    <p>Not sure? Start with Free and upgrade anytime.</p>
+  </div>
+</div>
+{% endblock %}
