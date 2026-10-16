@@ -199,6 +199,7 @@ class APIConfigWidget(tk.Frame):
         self._add_rancher_section()
         self._add_github_section()
         self._add_github_oauth_section()
+        self._add_psreops_oauth_section()
         self._add_github_enterprise_section()
         self._add_jira_section()
         self._add_artifactory_section()
@@ -1344,6 +1345,47 @@ class APIConfigWidget(tk.Frame):
 
         self._add_divider()
     
+    def _add_psreops_oauth_section(self):
+        """Add GitHub OAuth app section for PsreOps login."""
+        self._add_section_header("GitHub OAuth App (PsreOps Login)", "https://github.com/organizations/techno-vet/settings/applications")
+
+        section = tk.Frame(self.scroll_frame, bg='#1e1e1e')
+        section.pack(fill=tk.X, padx=10)
+
+        self._add_field(section, "Client ID:", "PSREOPS_OAUTH_CLIENT_ID")
+        self._add_field(section, "Client Secret:", "PSREOPS_OAUTH_CLIENT_SECRET", is_masked=True)
+        self._add_field(section, "Callback URL:", "PSREOPS_OAUTH_CALLBACK_URL")
+
+        help_label = tk.Label(
+            section,
+            text="Used by PsreOps JupyterHub login flows. Callback URL must be registered in the GitHub OAuth app.",
+            font=('Segoe UI', 8, 'italic'),
+            fg='#808080',
+            bg='#1e1e1e',
+            anchor=tk.W,
+            wraplength=800
+        )
+        help_label.pack(fill=tk.X, pady=(2, 5), padx=(140, 0))
+
+        button_frame = tk.Frame(section, bg='#1e1e1e')
+        button_frame.pack(fill=tk.X, pady=(4, 0))
+
+        oauth_btn = tk.Frame(button_frame, bg='#3c3c3c', cursor='hand2')
+        oauth_btn.pack(side=tk.RIGHT)
+        oauth_btn.bind('<Button-1>', lambda e: self._open_url("https://github.com/organizations/techno-vet/settings/applications"))
+
+        oauth_inner = tk.Frame(oauth_btn, bg='#3c3c3c', cursor='hand2')
+        oauth_inner.pack(padx=15, pady=6)
+        oauth_inner.bind('<Button-1>', lambda e: self._open_url("https://github.com/organizations/techno-vet/settings/applications"))
+
+        oauth_text = tk.Label(oauth_inner, text="Open OAuth App Settings", font=('Segoe UI', 9, 'bold'),
+                              fg='#e0e0e0', bg='#3c3c3c', cursor='hand2')
+        oauth_text.pack(side=tk.LEFT)
+        oauth_text.bind('<Button-1>', lambda e: self._open_url("https://github.com/organizations/techno-vet/settings/applications"))
+
+        self._add_test_button(section, self._test_psreops_oauth)
+        self._add_divider()
+    
     def _test_github(self):
         """Test GitHub connection."""
         token = self.entries['GITHUB_TOKEN'].get().strip()
@@ -1430,6 +1472,25 @@ class APIConfigWidget(tk.Frame):
         
         self._add_test_button(section, self._test_github_enterprise)
         self._add_divider()
+    
+    def _test_psreops_oauth(self):
+        """Test PsreOps OAuth app configuration."""
+        client_id = self.entries.get('PSREOPS_OAUTH_CLIENT_ID', tk.Entry()).get().strip() if 'PSREOPS_OAUTH_CLIENT_ID' in self.entries else ""
+        client_secret = self.entries.get('PSREOPS_OAUTH_CLIENT_SECRET', tk.Entry()).get().strip() if 'PSREOPS_OAUTH_CLIENT_SECRET' in self.entries else ""
+        callback_url = self.entries.get('PSREOPS_OAUTH_CALLBACK_URL', tk.Entry()).get().strip() if 'PSREOPS_OAUTH_CALLBACK_URL' in self.entries else ""
+        
+        if not client_id or not client_secret:
+            self._log("PsreOps OAuth: Client ID and Secret required", 'err')
+            return
+        
+        if not callback_url:
+            self._log("PsreOps OAuth: Callback URL required", 'err')
+            return
+        
+        self._log("PsreOps OAuth: Configuration looks valid", 'ok')
+        self._log(f"  Client ID: {client_id[:20]}...", 'info')
+        self._log(f"  Callback URL: {callback_url}", 'info')
+        self._log("Note: Verify this callback URL is registered in GitHub OAuth app settings", 'warn')
     
     def _test_github_enterprise(self):
         """Test GitHub Enterprise connection (SSH + API)."""
